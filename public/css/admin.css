@@ -1,0 +1,117 @@
+body{
+    background:#FFFFF4;
+}
+
+
+.nav{
+    height:60px;
+    width: 100%;
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    background: #333332;
+    overflow: hidden;
+    z-index: 100;
+    box-shadow: 1px 1px 1px #888888;
+    color:white;
+
+}
+
+.nav > div {
+    display: inline-block;
+    height: 60px;
+}
+
+.nav-left{
+    margin-right: 10px;
+}
+.nav-right{
+    padding: 0px 10px;
+    position: relative;
+    float: right;
+}
+
+.users-list {
+    padding: 10px;
+}
+.users-list li {
+    cursor: pointer;
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 5px;
+    -moz-border-radius: 5px;
+    background: #fff;
+    margin: 0 10px 0 0;
+    color:black;
+    border:0px;
+}
+
+.users-list.approved li {
+    background: #74ce9c;
+    color:white;
+}
+.users-list.deleted li {
+    background: #F54040;
+    color:white;
+}
+
+
+
+.admin-body{
+    width:80%;
+    margin:0 auto;
+    max-width:1200px;
+    min-width:340px;
+    top:43px;
+    position: relative;
+    padding-top: 15px;
+}
+.category-container{
+    width:100%;
+    overflow:hidden;
+}
+
+.choice-div{
+    width:50%;
+    display:inline-block;
+    vertical-align:top;
+}
+.choice-div > h3{
+    margin-left: 10px;
+}
+@media (max-width: 650px) {
+    .choice-div{
+        width:100%;
+    }
+}
+.categories-sortable{
+    min-height: 150px;
+    background: aliceblue;
+    border-radius: 4px; 
+    -moz-border-radius: 4px;
+}
+.approved {
+    background: #e9f5f1;
+    padding: 13px 18px;
+    margin: 10px;
+}
+
+.deleted {
+    background: #F9E4DE;
+    padding: 13px 18px;
+    margin: 10px;
+}
+
+.submit-container button {
+    font-size: 16px;
+    background: #ffffff;
+    border: 1px solid grey;
+    border-radius: 4px;
+    -moz-border-radius: 4px;
+    margin-left: 10px;
+    padding: 5px 8px;
+}
+button:focus{
+    outline: none;
+   background: #DEDEDE;
+} 

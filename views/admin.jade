@@ -1,0 +1,31 @@
+extends layout
+    
+block content    
+    link(rel='stylesheet', href='/css/admin.css')
+    .nav
+      .logo-container.nav-left
+        .app-logo
+        .app-name
+          h2 IMG-Stream
+      .heading.nav-left
+        h2 Admin Portal
+      .logout-containe.nav-right
+        h2 Logout
+    .admin-body
+      h2 Users with No Access
+      p New users appear in this section, you can also drag an existing user with access in it to revoke its access.
+      ul#categories-source.users-list.categories-sortable
+        each i in users_toBeApproved
+          li.ui-state-default= i
+      .category-container
+        .approved-container.choice-div
+          h3 To Be approved:
+          ul#categories-chosen.users-list.approved.categories-sortable
+            each j in users_approved
+              li.ui-state-default= j
+        .delete-container.choice-div
+          h3 To be deleted
+          ul#categories-chosen.users-list.deleted.categories-sortable
+      .submit-container
+        button Submit
+    script(src='/js/admin.js').
