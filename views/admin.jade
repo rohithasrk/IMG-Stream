@@ -14,7 +14,7 @@ block content
     .admin-body
       h2 Users with No Access
       p New users appear in this section, you can also drag an existing user with access in it to revoke its access.
-      ul#categories-source.users-list.categories-sortable
+      ul#categories-source.users-list.toBeApproved.categories-sortable
         each i in users_toBeApproved
           li.ui-state-default= i
       .category-container
@@ -27,5 +27,9 @@ block content
           h3 To be deleted
           ul#categories-chosen.users-list.deleted.categories-sortable
       .submit-container
-        button Submit
+        form(role='form', action="/admin",method="post")
+          input(name = 'toBeApproved' id = 'toBeApproved' type='hidden').
+          input(name = 'approved' id = 'approved' type='hidden').
+          input(name= 'deleted' id='deleted' type='hidden').
+          button(type='submit') Submit
     script(src='/js/admin.js').

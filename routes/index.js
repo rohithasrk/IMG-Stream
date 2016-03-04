@@ -34,10 +34,16 @@ router.get('/admin', function(req, res){
 });
 
 router.post('/admin', function(req, res){
-    if(!req.user || req.user!=='admin'){
-        res.send("Not allowed.");
+    if(req.user&&req.user.username==="admin"){
+        var deleted = req.body.deleted.split(',%,');
+        if(deleted.length>0) deleted.pop();
+        var approved = req.body.approved.split(',%,');
+        if(approved.length>0) approved.pop();
+        var toBeApproved = req.body.toBeApproved.split(',%,');
+        if(toBeApproved.length>0) toBeApproved.pop();
+        res.send(deleted+approved+toBeApproved)
     }else{
-        res.send("User will be allowed");
+        res.send("Not allowed");
     }
 }); 
 
