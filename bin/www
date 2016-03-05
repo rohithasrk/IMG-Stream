@@ -7,6 +7,7 @@
 var app = require('../app');
 var debug = require('debug')('IMG-Stream:server');
 var http = require('http');
+var Account = require('../models/account');
 
 /**
  * Get port from environment and store in Express.
@@ -20,6 +21,31 @@ app.set('port', port);
  */
 
 var server = http.createServer(app);
+
+var io = require('socket.io')(server);
+io.use(function(socket,next){
+    app.sessionMiddleware(socket.request,{},next);
+}).on('connection',function(socket){
+    if(socket.request.session&&socket.request.session.passport){
+        var username = socket.request.session.passport.user;
+        if(username){
+            Account.find({username:username},function(err,users){
+                if(users[0].approved){
+                    
+                    //Sockets Here....
+
+
+                }else{
+                    socket.disconnect('unauthorized');
+                }
+            });
+        }else{
+            socket.disconnect('unauthorized');
+        }
+    }else{
+        socket.disconnect('unauthorized');
+    }
+});
 
 /**
  * Listen on provided port, on all network interfaces.

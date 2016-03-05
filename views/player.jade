@@ -1,0 +1,9 @@
+extends layout
+
+block content
+    h1 Welcome to Player
+    script(src='/socket.io/socket.io.js')
+    script.
+        var socket = io.connect('http://localhost:3000');
+
+

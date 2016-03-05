@@ -5,7 +5,13 @@ var router = express.Router();
 var async = require('async');
 
 router.get('/', function (req, res) {
-    res.render('index', { user : req.user });
+    if(req.user&&req.user.username==="admin"){
+        res.redirect("/admin");
+    }else if(req.user){
+        res.redirect("/player");
+    }else{
+            res.render("index");
+    }
 });
 
 router.get('/admin', function(req, res){
@@ -87,6 +93,37 @@ router.post('/admin', function(req, res){
     }
 }); 
 
+
+router.get('/login', function(req, res) {
+    res.render('login', { user : req.user });
+});
+
+router.post('/login', passport.authenticate('local'), function(req, res) {
+    res.redirect('/');
+});
+
+router.get('/logout', function(req, res) {
+    req.logout();
+    res.redirect('/');
+});
+
+
+router.get('/player',function(req, res){
+    if(!req.user){
+        res.redirect('/');
+    }else{
+        var username = req.user.username;
+        Account.find({username:username},function(err,users){
+            if(users[0].approved){
+                res.render('player');
+            }else{
+                res.send('Waiting approval from the admin');
+            }
+        });
+    }
+})
+
+
 router.get('/register', function(req, res) {
     res.render('register', { });
 });
@@ -106,20 +143,6 @@ router.post('/register', function(req, res) {
         });
     });
 });
-
-router.get('/login', function(req, res) {
-    res.render('login', { user : req.user });
-});
-
-router.post('/login', passport.authenticate('local'), function(req, res) {
-    res.redirect('/');
-});
-
-router.get('/logout', function(req, res) {
-    req.logout();
-    res.redirect('/');
-});
-
 
 module.exports = router;
 
