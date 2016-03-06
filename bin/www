@@ -7,7 +7,43 @@
 var app = require('../app');
 var debug = require('debug')('IMG-Stream:server');
 var http = require('http');
+var eventEmitter = require('events');
+var myEE = new eventEmitter();
+
 var Account = require('../models/account');
+var webdriverApi = require('../libs/webdriverApi.js');
+var driverG;
+var updatingG = true;
+var youtubeOpen = false;
+var webdriverOpen = false;
+
+myEE.on('updatingG',function(state){
+    updatingG = state;
+    //console.log('Webdriver Updating: '+state);
+});
+
+myEE.on('webdriverOpen',function(state){
+    webdriverOpen = state;
+    //console.log("webdriverOpen: " + state);
+});
+
+myEE.on('youtubeOpen',function(state){
+    youtubeOpen = state;
+    //console.log("YoutubeOpen:" + state);
+});
+
+myEE.on('updateDriverG',function(newDriver){
+    driverG = newDriver;
+    updatingG = false;
+    //console.log('Webdriver: Updated');
+});
+
+webdriverApi.startWebdriver(function(returnedDriver){
+    driverG = returnedDriver;
+    //console.log("webdriverOpen: true");
+    updatingG = false;
+    webdriverOpen = true;
+});
 
 /**
  * Get port from environment and store in Express.
@@ -32,7 +68,76 @@ io.use(function(socket,next){
             Account.find({username:username},function(err,users){
                 if(users[0].approved){
                     
-                    //Sockets Here....
+                    myEE.on('sendVideoStatus',function(){
+                        if(!updatingG && webdriverOpen){
+                            webdriverApi.getVideoStats(driverG,myEE,function(statusObj){
+                                socket.emit('videoStatus',statusObj);
+                            });
+                        }
+                    });
+
+                    setInterval(function(){
+                        myEE.emit('sendVideoStatus');
+                    },1000);
+                    
+                    socket.on('streamById',function(videoId){
+                        if(!updatingG){
+                            webdriverApi.streamById(driverG,myEE,function(error){
+                                if(error){
+                                    console.log('error in streamById');
+                                }else{
+                                    myEE.emit('webdriverOpen',true);
+                                    myEE.emit('youtubeOpen',true);
+                                }
+                                myEE.emit('sendVideoStatus');
+                                
+                            },videoId,1);
+                        }else{
+                            myEE.once('updateDriverG',function(newDriver){
+                                webdriverApi.streamById(newDriver,myEE,function(error){
+                                    if(error){
+                                        console.log('error in streamById');
+                                    }else{
+                                        myEE.emit('webdriverOpen',true);
+                                        myEE.emit('youtubeOpen',true);
+                                    }
+                                    myEE.emit('sendVideoStatus');
+                                });
+                            });
+                        }
+                    });
+
+                    socket.on('setVolume',function(volume){
+                            if(!updatingG && webdriverOpen && youtubeOpen){
+                                webdriverApi.setVolume(driverG,myEE,volume,function(){
+                                    console.log("Changed Volume to "+volume);
+                                });
+                            }
+                    });
+
+		    socket.on('seekTo',function(seekTime){
+          		    if(!updatingG && webdriverOpen && youtubeOpen){
+                                webdriverApi.seekTo(driverG,myEE,seekTime,function(){
+             		            console.log("Video seeked to "+seekTime);
+                                });
+                            }
+       		    });
+  
+     		    socket.on('play',function(){
+         		if(!updatingG && webdriverOpen && youtubeOpen){
+                            webdriverApi.play(driverG,myEE,function(){
+             		        console.log("Video played.");
+                            });
+                        }
+     		    });
+
+     		    socket.on('pause',function(){
+         		if(!updatingG && webdriverOpen && youtubeOpen){
+                            webdriverApi.pause(driverG,myEE,function(){
+              		        console.log("Video paused.");
+          		    });
+                        }
+      		    });
 
 
                 }else{

@@ -1,9 +1,64 @@
 extends layout
 
 block content
+    link(rel='stylesheet', href='/css/rangeSlider.css')
+    link(rel='stylesheet', href='/css/rangeSliderFlat.css')
+    link(rel='stylesheet', href='/css/player.css')
     h1 Welcome to Player
+    #messageDiv
+    #seekBarDiv
+        input#seekBar(type='text', name='seekBar', value='')
     script(src='/socket.io/socket.io.js')
+    script(src='/js/ion.rangeSlider.min.js')
     script.
         var socket = io.connect('http://localhost:3000');
+        socket.emit('test');
+        var changingSeek = false;
+        $("#seekBar").ionRangeSlider({
+            type: "single",
+            min: 0,
+            max: 100,
+            force_edges: true,
+            from: 50,
+            keyboard: true,
+            onStart: function (data) {
+                console.log("onStart");
+            },
+            onChange: function (data) {
+                changingSeek = true;
+            },
+            onFinish: function (data) {
+                socket.emit('seekTo',data.from);
+                changingSeek = false;
+            },
+            onUpdate: function (data) {
+                //console.log("onUpdate");
+            }
+        });
+        var slider = $("#seekBar").data("ionRangeSlider");
 
-
+        socket.on('videoStatus',function(s){
+            if(s.driverUp){
+                if(s.youtubeOpen){
+                    if(s.videoStats){
+                        videoStats = s.videoStats;
+                        if(!changingSeek){
+                            slider.update({
+                                from : parseInt(videoStats.currentTime),
+                                max  : parseInt(videoStats.duration),
+                                from_max: parseInt(videoStats.duration)
+                            });
+                        }
+                        videoData = videoStats.videoData;
+                        $('#messageDiv').html("Title: "+videoData.title);
+                    }else{
+                        console.log("status object dosn't exist.");
+                    }
+                }
+                else{
+                    $('#messageDiv').html("Driver is running, but youTube is not open on it.");
+                }
+            }else{
+                $('#messageDiv').html("Driver is not running");   
+            }
+        });
