@@ -6,14 +6,36 @@ block content
     link(rel='stylesheet', href='/css/player.css')
     h1 Welcome to Player
     #messageDiv
+    #streamItContainer
+        table
+            tr
+                td
+                    input#toBeStreamedId(type='texbox')
+               td
+                    button#b_stream stream it!
+    #playVolumeContainer
+        #playButtonDiv
+            button#b_play
+        #volumeBarDiv
+            input#volumeBar(type='test', name='volumeBar', value='')
     #seekBarDiv
         input#seekBar(type='text', name='seekBar', value='')
+    #logoutContainer
+        a(href='/logout') logout
     script(src='/socket.io/socket.io.js')
     script(src='/js/ion.rangeSlider.min.js')
     script.
         var socket = io.connect('http://localhost:3000');
         socket.emit('test');
         var changingSeek = false;
+        var changingVolume = false;
+        var playerState = 7;
+        var b_playValue = {
+            7 :'Stream a song first',
+            1  :'Pause',
+            2  :'Play',
+            3  :'Playing Ad/Buffering'
+        }
         $("#seekBar").ionRangeSlider({
             type: "single",
             min: 0,
@@ -22,7 +44,6 @@ block content
             from: 50,
             keyboard: true,
             onStart: function (data) {
-                console.log("onStart");
             },
             onChange: function (data) {
                 changingSeek = true;
@@ -32,21 +53,59 @@ block content
                 changingSeek = false;
             },
             onUpdate: function (data) {
-                //console.log("onUpdate");
             }
         });
-        var slider = $("#seekBar").data("ionRangeSlider");
-
+        
+        $("#volumeBar").ionRangeSlider({
+            type: "single",
+            min: 0,
+            max: 100,
+            force_edges: true,
+            from: 100,
+            keyboard: false,
+            onStart: function (data) {
+            },
+            onChange: function (data) {
+                changingVolume = true;
+            },
+            onFinish: function (data) {
+                socket.emit('setVolume',data.from);
+                changingVolume = false;
+            },
+            onUpdate: function (data) {
+            }
+        });
+	
+        $("#b_play").click(function(){
+            if(playerState==1)
+                socket.emit('pause');
+            if(playerState==2)
+                socket.emit('play');
+        });
+        
+        $("#b_stream").click(function(){
+            toBeStreamed = $("#toBeStreamedId")[0].value;
+            socket.emit('streamById',toBeStreamed);
+        });
+        var seekSlider = $("#seekBar").data("ionRangeSlider");
+        var volumeSlider = $("#volumeBar").data("ionRangeSlider");
         socket.on('videoStatus',function(s){
             if(s.driverUp){
                 if(s.youtubeOpen){
                     if(s.videoStats){
+                        playerState = s.videoStats.playerState;
                         videoStats = s.videoStats;
+                        $("#b_play").html(b_playValue[playerState]);
                         if(!changingSeek){
-                            slider.update({
+                            seekSlider.update({
                                 from : parseInt(videoStats.currentTime),
                                 max  : parseInt(videoStats.duration),
                                 from_max: parseInt(videoStats.duration)
+                            });
+                        }
+                        if(!changingVolume){
+                            volumeSlider.update({
+                                from:parseInt(videoStats.volume)
                             });
                         }
                         videoData = videoStats.videoData;

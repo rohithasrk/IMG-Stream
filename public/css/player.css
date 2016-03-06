@@ -2,3 +2,21 @@
     width:60%;
     margin:auto;
 }
+
+#volumeBarDiv{
+    width:20%;
+    margin:auto;
+}
+
+
+#streamItContainer{
+    margin-top:30px;
+}
+
+table{
+    margin:auto;   
+}
+
+body{
+    text-align:center;
+}
