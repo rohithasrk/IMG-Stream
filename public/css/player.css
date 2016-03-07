@@ -20,3 +20,8 @@ table{
 body{
     text-align:center;
 }
+
+#results li{
+    width:60%;
+    margin:auto;
+}

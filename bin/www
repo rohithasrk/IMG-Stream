@@ -49,6 +49,7 @@ webdriverApi.startWebdriver(function(returnedDriver){
  * Get port from environment and store in Express.
  */
 
+//if you change it here., change it in ../routers/index.js also.
 var port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
 

@@ -3,6 +3,11 @@ var passport = require('passport');
 var Account = require('../models/account');
 var router = express.Router();
 var async = require('async');
+var ip;
+var dns = require('dns').lookup(require('os').hostname(), function (err, add, fam) {
+  ip = add;
+});
+var port = 3000;
 
 router.get('/', function (req, res) {
     if(req.user&&req.user.username==="admin"){
@@ -115,7 +120,7 @@ router.get('/player',function(req, res){
         var username = req.user.username;
         Account.find({username:username},function(err,users){
             if(users[0].approved){
-                res.render('player');
+                res.render('player',{ip:ip,port:port});
             }else{
                 res.send('Waiting approval from the admin');
             }

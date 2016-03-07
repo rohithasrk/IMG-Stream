@@ -10,9 +10,9 @@ block content
         table
             tr
                 td
-                    input#toBeStreamedId(type='texbox')
-               td
-                    button#b_stream stream it!
+                    input#toBeStreamed(name='toBeStreamed' ,type='texbox') 
+        #results.results
+            ul
     #playVolumeContainer
         #playButtonDiv
             button#b_play
@@ -25,7 +25,7 @@ block content
     script(src='/socket.io/socket.io.js')
     script(src='/js/ion.rangeSlider.min.js')
     script.
-        var socket = io.connect('http://localhost:3000');
+        var socket = io.connect('http://#{ip}:#{port}');
         socket.emit('test');
         var changingSeek = false;
         var changingVolume = false;
@@ -82,11 +82,7 @@ block content
             if(playerState==2)
                 socket.emit('play');
         });
-        
-        $("#b_stream").click(function(){
-            toBeStreamed = $("#toBeStreamedId")[0].value;
-            socket.emit('streamById',toBeStreamed);
-        });
+
         var seekSlider = $("#seekBar").data("ionRangeSlider");
         var volumeSlider = $("#volumeBar").data("ionRangeSlider");
         socket.on('videoStatus',function(s){
@@ -121,3 +117,48 @@ block content
                 $('#messageDiv').html("Driver is not running");   
             }
         });
+
+        $(document).ready(function(){
+            $("#toBeStreamed").focus();
+            $(document).on('click', '#results li', function() {
+                socket.emit('streamById',$(this).attr("id"));   
+            });
+            
+            $(document).on('keyup', "#toBeStreamed", function(){
+                q = $("#toBeStreamed")[0].value;
+                q = q.replace(' ', '+');
+                data = {
+                    q    : q,
+                    part : "snippet",
+                    key  : "",
+                    maxResults : "5",
+                    type : "video"
+                };
+                $.ajax({
+                    type: "GET",
+                    url: "https://www.googleapis.com/youtube/v3/search",
+                    datatype: 'json',
+                    data : data,
+                    success: function(response){
+                        showResults(response);
+                    }
+                });
+            });
+        });
+
+        // To display the videos received from youtube api.
+        function showResults(response) {
+            data = response.items;
+            var htmly = '', len = response.items.length;
+            
+            for(var i = 0; i < len; i++) {
+                htmly += '<li id="' + data[i].id.videoId;
+                htmly += '"><div class="results-content"><h4 class="results-name row">';
+                htmly += '<span class="results-img col-xs-2"><img src="';
+                htmly += data[i].snippet.thumbnails["default"].url;
+                htmly += '" /></span><span class="results-title col-xs-8">';
+                htmly += data[i].snippet.title;
+                htmly += '</span></h4></div></li>';
+            }
+            $("#results ul").html(htmly);
+        }
