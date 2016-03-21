@@ -4,24 +4,24 @@ block content
     link(rel='stylesheet', href='/css/rangeSlider.css')
     link(rel='stylesheet', href='/css/rangeSliderFlat.css')
     link(rel='stylesheet', href='/css/player.css')
-    h1 Welcome to Player
+    link(rel='stylesheet', href='/css/font-awesome.min.css')
+    h1 IMG-Stream
     #messageDiv
     #streamItContainer
-        table
-            tr
-                td
-                    input#toBeStreamed(name='toBeStreamed' ,type='texbox') 
+        input#toBeStreamed(name='toBeStreamed' ,type='texbox') 
         #results.results
             ul
-    #playVolumeContainer
-        #playButtonDiv
-            button#b_play
-        #volumeBarDiv
-            input#volumeBar(type='test', name='volumeBar', value='')
-    #seekBarDiv
-        input#seekBar(type='text', name='seekBar', value='')
-    #logoutContainer
-        a(href='/logout') logout
+    #playerBigContainer
+        #playerContainer
+            #playVolumeContainer
+                #playButtonDiv
+                    #b_play 
+                        i.fa.fa-refresh.fa-spin
+                #volumeBarDiv
+                    input#volumeBar(type='test', name='volumeBar', value='')
+                .clear-fix
+            #seekBarDiv
+                input#seekBar(type='text', name='seekBar', value='') 
     script(src='/socket.io/socket.io.js')
     script(src='/js/ion.rangeSlider.min.js')
     script.
@@ -31,17 +31,17 @@ block content
         var changingVolume = false;
         var playerState = 7;
         var b_playValue = {
-            7 :'Stream a song first',
-            1  :'Pause',
-            2  :'Play',
-            3  :'Playing Ad/Buffering'
+            7 :'<i class="fa fa-refresh fa-spin"></i>',
+            1  :'<i class="fa fa-pause"></i>',
+            2  :'<i class="fa fa-play"></i>',
+            3  :'<i class="fa fa-spinner fa-pulse"></i>'
         }
         $("#seekBar").ionRangeSlider({
             type: "single",
             min: 0,
             max: 100,
             force_edges: true,
-            from: 50,
+            from: 0,
             keyboard: true,
             onStart: function (data) {
             },
@@ -153,12 +153,12 @@ block content
             
             for(var i = 0; i < len; i++) {
                 htmly += '<li id="' + data[i].id.videoId;
-                htmly += '"><div class="results-content"><h4 class="results-name row">';
-                htmly += '<span class="results-img col-xs-2"><img src="';
+                htmly += '"><div class="results-content"><div class="results-name row">';
+                htmly += '<div class="results-img col-xs-2"><img src="';
                 htmly += data[i].snippet.thumbnails["default"].url;
-                htmly += '" /></span><span class="results-title col-xs-8">';
+                htmly += '" /></div><div class="results-title col-xs-8">';
                 htmly += data[i].snippet.title;
-                htmly += '</span></h4></div></li>';
+                htmly += '</div></div></div><div class="clear-fix"></div></li>';
             }
             $("#results ul").html(htmly);
         }

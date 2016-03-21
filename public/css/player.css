@@ -1,27 +1,148 @@
 #seekBarDiv{
-    width:60%;
-    margin:auto;
+    margin-bottom: 30px;
+    clear:both; 
+    margin-top: 8px;
 }
 
 #volumeBarDiv{
     width:20%;
     margin:auto;
+    float: right;
 }
-
+.irs-min{
+	display: none;
+}
 
 #streamItContainer{
     margin-top:30px;
 }
 
+#toBeStreamed{
+	width: 50%;
+	height: 25px;
+	margin-bottom: 20px;
+}
+
+#playerBigContainer{
+	background-color:#3e3e3e;
+	padding: 10px;
+	position: fixed;
+	bottom: 0;
+	width: 100%;
+}
+#playerContainer{
+	width: 50%;
+	margin:20px	 auto;
+	
+}
+#b_play{
+	background-color:#E1E4E9;
+	padding: 11px;
+	width:20px;
+	height: 20px;
+	line-height: 20px;
+	border-radius: 100px;
+	float: left;
+	cursor: pointer;
+	color: #444;
+	box-shadow:0 0 5px rgba(0,0,0,0.1);
+}
+
+h1{
+	color:#ED5565;
+}
 table{
     margin:auto;   
 }
 
 body{
     text-align:center;
+    margin: 0;
+    background-color: #FBFBFB;
 }
 
-#results li{
-    width:60%;
-    margin:auto;
+.results {
+	text-align: left;
+	color:#798795;
+	bottom:0;
+	height: 60%;
+	width: 50%;
+	background-color: #ffffff;
+	overflow: auto;
+	margin: auto;
+}
+.results ul {
+	padding:0;
+	margin:0;
+	list-style-type:none;
+	border-radius:0 0 6px 6px;
+}
+.col-xs-2{
+	width: 10%;
+}
+.col-xs-8{
+	width: 80%;
+}
+.results li {
+	position:relative;
+	padding:20px;
+	margin-top:2px;
+	font-size:14px;
+	cursor:pointer;
+	background:#ffffff;
+	border-bottom:1px solid rgba(0,0,0,0.05);
+	/*background-size:20px 20px;*/
+	/*-webkit-transition:.25s;*/
+	transition:.25s
+}
+.results-img img {
+	height: 40px;
+	width: auto;
+}
+.results-img{
+	float: left;
+}
+
+.results{
+	background-color: white;
+	border-radius:4px;
+	box-shadow:0 0 5px rgba(0,0,0,0.4);
+
+}
+.results li:first-child {
+	margin-top:0;
+}
+.results li:last-child {
+	padding-bottom:21px;
+	border-radius:0 0 6px 6px;
+}
+.results-name {
+	margin:0px 0px;
+	font-size:16px;
+	color:#fff;
+	font-weight: 200;
+}
+.clear-fix{
+	clear: both;	
+}
+.results-title {
+	color:#333;
+	float:left;
+	padding-top: 0px;
+}
+.results::-webkit-scrollbar{
+width:12px;
+background-color:rgba(52,73,94,1);
+} 
+.results::-webkit-scrollbar-thumb{
+background-color:rgba(38,55,70,0.7);
+border-radius:6px;
+}
+.results::-webkit-scrollbar-thumb:hover{
+background-color:rgba(38,55,70,0.4);
+/*border:1px solid #333333;*/
+}
+.results::-webkit-scrollbar-thumb:active{
+background-color:rgba(38,55,70,1);
+/*border:1px solid #333333;*/
 }
