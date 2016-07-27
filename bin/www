@@ -73,7 +73,7 @@ io.use(function(socket,next){
                         if(!updatingG && webdriverOpen){
                             webdriverApi.getVideoStats(driverG,myEE,function(statusObj){
                                 console.log('videoStatus Emitted'+youtubeOpen +updatingG+webdriverOpen);
-                                socket.emit('videoStatus',statusObj);
+                                socket.volatile.emit('videoStatus',statusObj);
                             });
                         }
                     });
