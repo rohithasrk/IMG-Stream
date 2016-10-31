@@ -1,3 +1,3 @@
 # IMG-Stream
 
-Stream and control youtube videos inside a LAN environment. Useful tool if you have only single comp connected to speaker .
+Stream and control youtube videos inside a LAN environment. Useful tool if you only have a single computer connected to speaker.
